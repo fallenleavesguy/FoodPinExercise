@@ -11,7 +11,7 @@ import SwiftUI
 struct FoodPinExerciseApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RestaurantListView()
         }
     }
 }

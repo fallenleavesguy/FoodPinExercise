@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  RestaurantListView.swift
 //  FoodPinExercise
 //
 //  Created by donghs on 8/7/26.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct RestaurantListView: View {
     var body: some View {
         VStack {
             Image(systemName: "globe")
@@ -20,5 +20,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    RestaurantListView()
 }
