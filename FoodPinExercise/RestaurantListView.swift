@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct RestaurantListView: View {
+    @State var restaurantIsFavorites = Array(repeating: false, count: 21)
+
     var restaurantNames = [
         "Cafe Deadend", "Homei", "Teakha", "Cafe Loisl", "Petite Oyster", "For Kee Restaurant",
         "Po's Atelier", "Bourke Street Bakery", "Haigh's Chocolate", "Palomino Espresso", "Upstate",
@@ -41,18 +43,21 @@ struct RestaurantListView: View {
                 //     name: restaurantNames[index],
                 //     type: restaurantTypes[index],
                 //     location: restaurantLocations[index],
-                //     imageName: restaurantImages[index]
+                //     imageName: restaurantImages[index],
+                //     isFavorite: $restaurantIsFavorites[index]
                 // )
                 BasicTextImageRow(
                     name: restaurantNames[index],
                     imageName: restaurantImages[index],
                     type: restaurantTypes[index],
-                    location: restaurantLocations[index]
+                    location: restaurantLocations[index],
+                    isFavorite: $restaurantIsFavorites[index]
                 )
                 .listRowSeparator(.hidden)
                 // .alignmentGuide(.listRowSeparatorLeading) { dimensions in
                 //     dimensions[.leading]
                 // }
+                                
             }
         }
         .listStyle(.plain)
@@ -64,6 +69,10 @@ struct BasicTextImageRow: View {
     let imageName: String
     let type: String
     let location: String
+
+    @State private var showOptions = false
+    @State private var showError = false
+    @Binding var isFavorite: Bool
 
     var body: some View {
         HStack(alignment: .top, spacing: 20) {
@@ -83,7 +92,35 @@ struct BasicTextImageRow: View {
                     .font(.system(.subheadline, design: .rounded))
                     .foregroundStyle(.gray)
             }
+
+            if isFavorite {
+                Spacer()
+
+                Image(systemName: "heart.fill")
+                    .foregroundStyle(.yellow)
+            }
         }
+        .onTapGesture {
+            showOptions.toggle()
+        }
+        .confirmationDialog("What do you want to do?", isPresented: $showOptions, titleVisibility: .visible) {
+
+            Button("Reserve a table") {
+                self.showError.toggle()
+            }
+
+            Button(isFavorite ? "Remove from favorites" : "Mark as favorite") {
+                self.isFavorite.toggle()
+            }
+        }
+        .alert("Not yet available", isPresented: $showError) {
+            Button("OK") {
+
+            }
+        } message: {
+            Text("Sorry, this feature is not yet available. Please retry later.")
+        }
+
     }
 }
 
@@ -93,6 +130,10 @@ struct FullImageRow: View {
     var location: String
     var imageName: String
 
+    @State private var showOptions = false
+    @State private var showError = false
+    @Binding var isFavorite: Bool
+
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Image(imageName)
@@ -101,19 +142,51 @@ struct FullImageRow: View {
                 .frame(height: 200)
                 .clipShape(RoundedRectangle(cornerRadius: 20))
 
-            VStack(alignment: .leading) {
-                Text(name)
-                    .font(.system(.title2, design: .rounded))
+            HStack(alignment: .top) {
+                VStack(alignment: .leading) {
+                    Text(name)
+                        .font(.system(.title2, design: .rounded))
 
-                Text(type)
-                    .font(.system(.body, design: .rounded))
+                    Text(type)
+                        .font(.system(.body, design: .rounded))
 
-                Text(location)
-                    .font(.system(.subheadline, design: .rounded))
-                    .foregroundStyle(.gray)
+                    Text(location)
+                        .font(.system(.subheadline, design: .rounded))
+                        .foregroundStyle(.gray)
+                }
+
+                if isFavorite {
+                    Spacer()
+
+                    Image(systemName: "heart.fill")
+                        .foregroundStyle(.yellow)
+                }
             }
             .padding(.horizontal)
             .padding(.bottom)
+        }
+        .onTapGesture {
+            showOptions.toggle()
+        }
+        .confirmationDialog(
+            "What do you want to do?",
+            isPresented: $showOptions,
+            titleVisibility: .visible
+        ) {
+            Button("Reserve a table") {
+                showError.toggle()
+            }
+
+            Button(isFavorite ? "Remove from favorites" : "Mark as favorite") {
+                isFavorite.toggle()
+            }
+        }
+        .alert("Not yet available", isPresented: $showError) {
+            Button("OK") {
+
+            }
+        } message: {
+            Text("Sorry, this feature is not yet available. Please retry later.")
         }
     }
 
@@ -126,4 +199,19 @@ struct FullImageRow: View {
 #Preview("Dark mode") {
     RestaurantListView()
         .preferredColorScheme(.dark)
+}
+
+#Preview("BasicTextImageRow", traits: .sizeThatFitsLayout) {
+    BasicTextImageRow(name: "Cafe Deadend", imageName: "cafedeadend", type: "Cafe", location: "Hong Kong", isFavorite: .constant(true))
+}
+
+#Preview("FullImageRow", traits: .sizeThatFitsLayout) {
+    FullImageRow(name: "Cafe Deadend", type: "Cafe", location: "Hong Kong", imageName: "cafedeadend", isFavorite: .constant(true))
+}
+
+#Preview(
+    "BasicTextImageRow",
+    traits: .fixedLayout(width: 400, height: 50)
+) {
+    BasicTextImageRow(name: "Cafe Deadend", imageName: "cafedeadend", type: "Cafe", location: "Hong Kong", isFavorite: .constant(true))
 }
