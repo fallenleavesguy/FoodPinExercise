@@ -74,9 +74,10 @@ struct RestaurantListView: View {
     ]
 
     var body: some View {
-        List {
-            ForEach(restaurants.indices, id: \.self) { index in
-                BasicTextImageRow(restaurant: $restaurants[index])
+        NavigationStack {
+            List {
+                ForEach(restaurants.indices, id: \.self) { index in
+                    BasicTextImageRow(restaurant: $restaurants[index])
                     // .swipeActions(edge: .leading, allowsFullSwipe: false) {
                     //     Button {
 
@@ -92,12 +93,15 @@ struct RestaurantListView: View {
                     //     }
                     //     .tint(.orange)
                     // }
+                }
+                .onDelete(perform: { indexSet in
+                    restaurants.remove(atOffsets: indexSet)
+                })
             }
-            .onDelete(perform: { indexSet in
-                restaurants.remove(atOffsets: indexSet)
-            })
+            .listStyle(.plain)
+            .navigationTitle("FoodPin")
+            .navigationBarTitleDisplayMode(.automatic)
         }
-        .listStyle(.plain)
     }
 }
 
