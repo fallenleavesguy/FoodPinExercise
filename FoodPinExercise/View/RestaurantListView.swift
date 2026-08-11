@@ -77,7 +77,16 @@ struct RestaurantListView: View {
         NavigationStack {
             List {
                 ForEach(restaurants.indices, id: \.self) { index in
-                    BasicTextImageRow(restaurant: $restaurants[index])
+                    ZStack(alignment: .leading) {
+                        NavigationLink(
+                            destination: RestaurantDetailView(restaurant: restaurants[index])
+                        ) {
+                            EmptyView()
+                        }
+                        .opacity(0)
+
+                        BasicTextImageRow(restaurant: $restaurants[index])
+                    }
                     // .swipeActions(edge: .leading, allowsFullSwipe: false) {
                     //     Button {
 
@@ -97,6 +106,7 @@ struct RestaurantListView: View {
                 .onDelete(perform: { indexSet in
                     restaurants.remove(atOffsets: indexSet)
                 })
+                .listRowSeparator(.hidden)
             }
             .listStyle(.plain)
             .navigationTitle("FoodPin")
