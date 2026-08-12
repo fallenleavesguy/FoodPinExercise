@@ -1,14 +1,14 @@
 //
-//  FoodPinExerciseApp.swift
-//  FoodPinExercise
+//  FoodPinApp.swift
+//  FoodPin
 //
-//  Created by donghs on 8/7/26.
+//  Created by Simon Ng on 27/10/2025.
 //
 
 import SwiftUI
 
 @main
-struct FoodPinExerciseApp: App {
+struct FoodPinApp: App {
     var body: some Scene {
         WindowGroup {
             RestaurantListView()
