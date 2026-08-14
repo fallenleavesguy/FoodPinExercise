@@ -36,7 +36,7 @@ struct RestaurantListView: View {
             List {
                 ForEach(restaurants.indices, id: \.self) { index in
                     ZStack(alignment: .leading) {
-                        NavigationLink(destination: RestaurantDetailView(restaurant: restaurants[index])) {
+                        NavigationLink(destination: RestaurantDetailView(restaurant: $restaurants[index])) {
                             EmptyView()
                         }
                         .opacity(0)
@@ -221,4 +221,3 @@ struct FullImageRow: View {
 #Preview("FullImageRow", traits: .sizeThatFitsLayout) {
     FullImageRow(name: "Cafe Deadend", type: "Cafe", location: "Hong Kong", imageName: "cafedeadend", isFavorite: .constant(true))
 }
-
