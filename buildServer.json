@@ -12,8 +12,8 @@
 	"argv": [
 		"/opt/homebrew/bin/xcode-build-server"
 	],
-	"workspace": "/Users/donghs/projects/github/FoodPinExercise/FoodPinExercise.xcodeproj/project.xcworkspace",
-	"build_root": "/Users/donghs/Library/Developer/Xcode/DerivedData/FoodPinExercise-fmaxhrjifanospafuoropzrvjmpj",
-	"scheme": "FoodPinExercise",
+	"workspace": "/Users/donghs/projects/github/FoodPinExercise/FoodPin.xcodeproj/project.xcworkspace",
+	"build_root": "/Users/donghs/Library/Developer/Xcode/DerivedData/FoodPin-bmqzibfufbzetgcgimhrdxyieyyq",
+	"scheme": "FoodPin",
 	"kind": "xcode"
 }
