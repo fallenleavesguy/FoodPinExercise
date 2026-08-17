@@ -11,7 +11,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		A14B8F1C302CABFA00A5F3A2 /* Exceptions for "FoodPin" folder in "FoodPin" target */ = {
+		F45893AC2EB33A3000BEF8BC /* Exceptions for "FoodPin" folder in "FoodPin" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -24,7 +24,7 @@
 		F45892EB2EAF18C000BEF8BC /* FoodPin */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				A14B8F1C302CABFA00A5F3A2 /* Exceptions for "FoodPin" folder in "FoodPin" target */,
+				F45893AC2EB33A3000BEF8BC /* Exceptions for "FoodPin" folder in "FoodPin" target */,
 			);
 			path = FoodPin;
 			sourceTree = "<group>";
