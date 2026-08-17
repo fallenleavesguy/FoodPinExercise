@@ -22,48 +22,70 @@ struct RestaurantDetailView: View {
                     .overlay {
                         VStack {
                             Image(systemName: restaurant.isFavorite ? "heart.fill" : "heart")
-                                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topTrailing)
+                                .frame(
+                                    minWidth: 0, maxWidth: .infinity, minHeight: 0,
+                                    maxHeight: .infinity, alignment: .topTrailing
+                                )
                                 .padding()
                                 .font(.system(size: 30))
                                 .foregroundColor(restaurant.isFavorite ? .yellow : .white)
                                 .padding(.top, 40)
-                            
+
                             VStack(alignment: .leading, spacing: 5) {
                                 Text(restaurant.name)
-                                    .font(.custom("Nunito-Regular", size: 35, relativeTo: .largeTitle))
+                                    .font(
+                                        .custom("Nunito-Regular", size: 35, relativeTo: .largeTitle)
+                                    )
                                     .bold()
                                 Text(restaurant.type)
                                     .font(.system(.headline, design: .rounded))
                                     .padding(.all, 5)
                                     .background(Color.black)
                             }
-                            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .bottomLeading)
+                            .frame(
+                                minWidth: 0, maxWidth: .infinity, minHeight: 0,
+                                maxHeight: .infinity, alignment: .bottomLeading
+                            )
                             .foregroundStyle(.white)
                             .padding()
                         }
                     }
-                
+
                 Text(restaurant.description)
                     .padding()
-                
+
                 HStack(alignment: .top) {
                     VStack(alignment: .leading) {
                         Text("ADDRESS")
                             .font(.system(.headline, design: .rounded))
-                        
+
                         Text(restaurant.location)
                     }
                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-                    
+
                     VStack(alignment: .leading) {
                         Text("PHONE")
                             .font(.system(.headline, design: .rounded))
-                        
+
                         Text(restaurant.phone)
                     }
                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                 }
                 .padding(.horizontal)
+
+                NavigationLink(
+                    destination:
+                        MapView(location: restaurant.location)
+                        .toolbarBackground(.hidden, for: .navigationBar)
+                        .edgesIgnoringSafeArea(.all)
+
+                ) {
+                    MapView(location: restaurant.location)
+                        .frame(height: 200)
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                        .padding()
+                        .allowsHitTesting(false)
+                }
             }
         }
         .ignoresSafeArea()
