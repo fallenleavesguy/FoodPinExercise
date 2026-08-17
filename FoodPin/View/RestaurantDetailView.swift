@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct RestaurantDetailView: View {
+    @State private var showReview = false
     
     var restaurant: Restaurant
     
@@ -86,9 +87,32 @@ struct RestaurantDetailView: View {
                         .padding()
                         .allowsHitTesting(false)
                 }
+
+                Button {
+                    self.showReview.toggle()
+                } label: {
+                    Text("Rate it")
+                        .font(.system(.headline, design: .rounded))
+                        .frame(minWidth: 0, maxWidth: .infinity)
+                }
+                .tint(Color("NavigationBarTitle"))
+                .buttonStyle(.borderedProminent)
+                .buttonBorderShape(.roundedRectangle(radius: 25))
+                .controlSize(.large)
+                .padding(.horizontal)
+                .padding(.bottom, 20)
             }
         }
         .ignoresSafeArea()
+        .overlay(
+            self.showReview
+                ? ZStack {
+                    ReviewView(isDisplayed: $showReview, restaurant: restaurant)
+                }
+
+                : nil
+        )
+        .toolbar(self.showReview ? .hidden : .visible)
     }
 }
 
