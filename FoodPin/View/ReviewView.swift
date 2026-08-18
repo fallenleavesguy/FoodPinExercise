@@ -56,6 +56,10 @@ struct ReviewView: View {
                         .easeOut.delay(
                             Double(Restaurant.Rating.allCases.firstIndex(of: rating)!) * 0.05),
                         value: showRatings)
+                    .onTapGesture {
+                        self.restaurant.rating = rating
+                        self.isDisplayed = false
+                    }
                 }
             }
         }
