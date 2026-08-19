@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct FoodPinApp: App {
@@ -13,6 +14,7 @@ struct FoodPinApp: App {
         WindowGroup {
             RestaurantListView()
         }
+        .modelContainer(for: Restaurant.self)
     }
     
     init() {

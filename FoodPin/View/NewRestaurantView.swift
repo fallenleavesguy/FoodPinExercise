@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct FormTextField: View {
     let label: String
@@ -61,7 +62,10 @@ struct FormTextView: View {
 
 
 struct NewRestaurantView: View {
+    @Bindable private var restaurantFormViewModel = RestaurantFormViewModel()
+
     @Environment(\.dismiss) var dismiss
+    @Environment(\.modelContext) private var modelContext
 
     enum PhotoSource: Identifiable {
         case photoLibrary
@@ -73,15 +77,31 @@ struct NewRestaurantView: View {
     }
 
     @State private var photoSource: PhotoSource?
-    @State var restaurantName = ""
-    @State private var restaurantImage = UIImage(named: "newphoto")!
     @State private var showPhotoOptions = false
+
+    init() {
+        let viewModel = RestaurantFormViewModel()
+        viewModel.image = UIImage(named: "newphoto") ?? UIImage()
+        restaurantFormViewModel = viewModel
+    }
+
+    private func save() {
+        let restaurant = Restaurant(
+            name: restaurantFormViewModel.name,
+            type: restaurantFormViewModel.type,
+            location: restaurantFormViewModel.location,
+            phone: restaurantFormViewModel.phone,
+            description: restaurantFormViewModel.summary,
+            image: restaurantFormViewModel.image)
+
+        modelContext.insert(restaurant)
+    }
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack {
-                    Image(uiImage: restaurantImage)
+                    Image(uiImage: restaurantFormViewModel.image)
                         .resizable()
                         .scaledToFill()
                         .frame(minWidth: 0, maxWidth: .infinity)
@@ -95,21 +115,21 @@ struct NewRestaurantView: View {
 
                     FormTextField(
                         label: "NAME", placeholder: "Fill in the restaurant name",
-                        value: .constant(""))
+                        value: $restaurantFormViewModel.name)
 
                     FormTextField(
                         label: "TYPE", placeholder: "Fill in the restaurant type",
-                        value: .constant(""))
+                        value: $restaurantFormViewModel.type)
 
                     FormTextField(
                         label: "ADDRESS", placeholder: "Fill in the restaurant address",
-                        value: .constant(""))
+                        value: $restaurantFormViewModel.location)
 
                     FormTextField(
                         label: "PHONE", placeholder: "Fill in the restaurant phone",
-                        value: .constant(""))
+                        value: $restaurantFormViewModel.phone)
 
-                    FormTextView(label: "DESCRIPTION", value: .constant(""), height: 100)
+                    FormTextView(label: "DESCRIPTION", value: $restaurantFormViewModel.summary, height: 100)
                 }
                 .padding()
 
@@ -128,9 +148,15 @@ struct NewRestaurantView: View {
                 }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Text("Save")
-                        .font(.headline)
-                        .foregroundColor(Color("NavigationBarTitle"))
+                    Button {
+                        save()
+                        dismiss()
+                    } label: {
+                        Text("Save")
+                            .font(.headline)
+                            .foregroundColor(Color("NavigationBarTitle"))
+                    }
+
                 }
             }
         }
@@ -145,10 +171,10 @@ struct NewRestaurantView: View {
         .fullScreenCover(item: $photoSource) { source in
             switch source {
             case .photoLibrary:
-                ImagePicker(sourceType: .photoLibrary, selectedImage: $restaurantImage)
+                ImagePicker(sourceType: .photoLibrary, selectedImage: $restaurantFormViewModel.image)
                     .ignoresSafeArea()
             case .camera:
-                ImagePicker(sourceType: .camera, selectedImage: $restaurantImage)
+                ImagePicker(sourceType: .camera, selectedImage: $restaurantFormViewModel.image)
                     .ignoresSafeArea()
             }
         }
