@@ -5,6 +5,9 @@ struct RestaurantListView: View {
     @Environment(\.modelContext) private var modelContext
 
     @State private var showNewRestaurant = false
+    @State private var searchText = ""
+    @State private var searchResult: [Restaurant] = []
+    @State private var isSearchActive = false
     
     @Query var restaurants: [Restaurant] 
 
@@ -28,7 +31,9 @@ struct RestaurantListView: View {
                         .resizable()
                         .scaledToFit()
                 } else {
-                    ForEach(restaurants) { restaurant in
+                    let listItems = isSearchActive ? searchResult : restaurants
+
+                    ForEach(listItems) { restaurant in
                         ZStack(alignment: .leading) {
                             NavigationLink(
                                 destination: RestaurantDetailView(restaurant: restaurant)
@@ -39,21 +44,21 @@ struct RestaurantListView: View {
 
                             BasicTextImageRow(restaurant: restaurant)
                         }
-                        .swipeActions(edge: .leading, allowsFullSwipe: false) {
-                            Button {
+                        // .swipeActions(edge: .leading, allowsFullSwipe: false) {
+                        //     Button {
 
-                            } label: {
-                                Image(systemName: "heart")
-                            }
-                            .tint(.green)
+                        //     } label: {
+                        //         Image(systemName: "heart")
+                        //     }
+                        //     .tint(.green)
 
-                            Button {
+                        //     Button {
 
-                            } label: {
-                                Image(systemName: "square.and.arrow.up")
-                            }
-                            .tint(.orange)
-                        }
+                        //     } label: {
+                        //         Image(systemName: "square.and.arrow.up")
+                        //     }
+                        //     .tint(.orange)
+                        // }
                     }
                     .onDelete(perform: deleteRecord(indexSet:))
                     .listRowSeparator(.hidden)
@@ -69,6 +74,23 @@ struct RestaurantListView: View {
                 }) {
                     Image(systemName: "plus")
                 } 
+            }
+        }
+        .searchable(text: $searchText, isPresented: $isSearchActive, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search restaurants...")
+        .searchSuggestions {
+            if searchText.isEmpty {
+                Text("Cafe").searchCompletion("Cafe")
+                Text("Thai").searchCompletion("Thai")
+            }
+        }
+        .onChange(of: searchText) { oldValue, newValue in
+            let predicate = #Predicate<Restaurant> {
+                $0.name.localizedStandardContains(newValue)
+            }
+            let descriptor = FetchDescriptor<Restaurant>(predicate: predicate)
+
+            if let result = try? modelContext.fetch(descriptor) {
+                searchResult = result
             }
         }
         .sheet(isPresented: $showNewRestaurant) {
