@@ -16,6 +16,8 @@ struct RestaurantListView: View {
     @State private var searchText = ""
     @State private var searchResult: [Restaurant] = []
     @State private var isSearchActive = false
+    @State private var showWalkthrough = false
+    @AppStorage("hasViewedWalkthrough") var hasViewedWalkthrough: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -53,6 +55,12 @@ struct RestaurantListView: View {
                     Image(systemName: "plus")
                 }
             }
+        }
+        .onAppear {
+            showWalkthrough = hasViewedWalkthrough ? false : true
+        }
+        .sheet(isPresented: $showWalkthrough) {
+            TutorialView()
         }
         .sheet(isPresented: $showNewRestaurant) {
             NewRestaurantView()
