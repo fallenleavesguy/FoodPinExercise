@@ -1,8 +1,16 @@
-import SwiftUI
+//
+//  Restaurant.swift
+//  FoodPin
+//
+//  Created by Simon Ng on 28/10/2025.
+//
+
+import Combine
 import SwiftData
+import SwiftUI
 
 @Model class Restaurant {
-
+    
     enum Rating: String, CaseIterable {
         case awesome
         case good
@@ -19,44 +27,44 @@ import SwiftData
             case .terrible: return "angry"
             }
         }
-
+        
     }
-
+    
     var name: String = ""
     var type: String = ""
     var location: String = ""
     var phone: String = ""
     var summary: String = ""
     @Attribute(.externalStorage) var imageData = Data()
-
+    
     @Transient var image: UIImage {
         get {
             UIImage(data: imageData) ?? UIImage()
         }
-
+        
         set {
             self.imageData = newValue.pngData() ?? Data()
         }
     }
-
+    
     var isFavorite: Bool = false
-
+    
     @Transient var rating: Rating? {
         get {
             guard let ratingText = ratingText else {
                 return nil
             }
-
+            
             return Rating(rawValue: ratingText)
         }
-
+        
         set {
             self.ratingText = newValue?.rawValue
         }
     }
-
+    
     @Attribute(originalName: "rating") var ratingText: Rating.RawValue?
-
+    
     init(name: String, type: String, location: String, phone: String, description: String, image: UIImage = UIImage(), isFavorite: Bool = false, rating: Rating? = nil) {
         self.name = name
         self.type = type

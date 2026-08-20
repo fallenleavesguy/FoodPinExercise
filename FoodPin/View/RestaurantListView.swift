@@ -1,27 +1,21 @@
+//
+//  ContentView.swift
+//  FoodPin
+//
+//  Created by Simon Ng on 27/10/2025.
+//
+
 import SwiftUI
 import SwiftData
 
 struct RestaurantListView: View {
     @Environment(\.modelContext) private var modelContext
-
+    @Query var restaurants: [Restaurant]
+    
     @State private var showNewRestaurant = false
     @State private var searchText = ""
     @State private var searchResult: [Restaurant] = []
     @State private var isSearchActive = false
-    
-    @Query var restaurants: [Restaurant] 
-
-    private func deleteRecord(indexSet: IndexSet) {
-        for index in indexSet {
-            let itemToDelete = restaurants[index]
-            modelContext.delete(itemToDelete)
-        }
-        // let itemsToDelete = indexSet.map { restaurants[$0] }
-
-        // for itemToDelete in itemsToDelete {
-        //     modelContext.delete(itemToDelete)
-        // }
-    }
     
     var body: some View {
         NavigationStack {
@@ -32,70 +26,61 @@ struct RestaurantListView: View {
                         .scaledToFit()
                 } else {
                     let listItems = isSearchActive ? searchResult : restaurants
-
-                    ForEach(listItems) { restaurant in
+                    
+                    ForEach(listItems, id: \.self) { listItem in
                         ZStack(alignment: .leading) {
-                            NavigationLink(
-                                destination: RestaurantDetailView(restaurant: restaurant)
-                            ) {
+                            NavigationLink(destination: RestaurantDetailView(restaurant: listItem)) {
                                 EmptyView()
                             }
                             .opacity(0)
-
-                            BasicTextImageRow(restaurant: restaurant)
+                            
+                            BasicTextImageRow(restaurant: listItem)
                         }
-                        // .swipeActions(edge: .leading, allowsFullSwipe: false) {
-                        //     Button {
-
-                        //     } label: {
-                        //         Image(systemName: "heart")
-                        //     }
-                        //     .tint(.green)
-
-                        //     Button {
-
-                        //     } label: {
-                        //         Image(systemName: "square.and.arrow.up")
-                        //     }
-                        //     .tint(.orange)
-                        // }
                     }
-                    .onDelete(perform: deleteRecord(indexSet:))
+                    .onDelete(perform: deleteRecord)
                     .listRowSeparator(.hidden)
                 }
-                
             }
             .listStyle(.plain)
+            
             .navigationTitle("FoodPin")
             .navigationBarTitleDisplayMode(.automatic)
+            
             .toolbar {
                 Button(action: {
                     self.showNewRestaurant = true
                 }) {
                     Image(systemName: "plus")
-                } 
+                }
             }
         }
+        .sheet(isPresented: $showNewRestaurant) {
+            NewRestaurantView()
+        }
         .searchable(text: $searchText, isPresented: $isSearchActive, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search restaurants...")
-        .searchSuggestions {
+        .searchSuggestions{
             if searchText.isEmpty {
                 Text("Cafe").searchCompletion("Cafe")
                 Text("Thai").searchCompletion("Thai")
             }
         }
         .onChange(of: searchText) { oldValue, newValue in
-            let predicate = #Predicate<Restaurant> {
-                $0.name.localizedStandardContains(newValue)
-            }
+            let predicate = #Predicate<Restaurant> { $0.name.localizedStandardContains(newValue) || $0.location.localizedStandardContains(newValue) }
+            
             let descriptor = FetchDescriptor<Restaurant>(predicate: predicate)
 
             if let result = try? modelContext.fetch(descriptor) {
                 searchResult = result
             }
         }
-        .sheet(isPresented: $showNewRestaurant) {
-            NewRestaurantView()
-        }
+    }
+    
+    private func deleteRecord(indexSet: IndexSet) {
+        
+          for index in indexSet {
+              let itemToDelete = restaurants[index]
+              modelContext.delete(itemToDelete)
+          }
     }
 }
 
@@ -235,15 +220,10 @@ struct FullImageRow: View {
 }
 
 #Preview("BasicTextImageRow", traits: .sizeThatFitsLayout) {
-    BasicTextImageRow(
-        restaurant: Restaurant(
-            name: "Cafe Deadend", type: "Coffee & Tea Shop",
-            location: "G/F, 72 Po Hing Fong, Sheung Wan, Hong Kong", phone: "232-923423",
-            description:
-                "Searching for great breakfast eateries and coffee? This place is for you. We open at 6:30 every morning, and close at 9 PM. We offer espresso and espresso based drink, such as capuccino, cafe latte, piccolo and many more. Come over and enjoy a great meal.",
-            image: UIImage(named: "cafedeadend")!, isFavorite: true))
+    BasicTextImageRow(restaurant: Restaurant(name: "Cafe Deadend", type: "Coffee & Tea Shop", location: "G/F, 72 Po Hing Fong, Sheung Wan, Hong Kong", phone: "232-923423", description: "Searching for great breakfast eateries and coffee? This place is for you. We open at 6:30 every morning, and close at 9 PM. We offer espresso and espresso based drink, such as capuccino, cafe latte, piccolo and many more. Come over and enjoy a great meal.", image: UIImage(named: "cafedeadend")!, isFavorite: true))
 }
 
 #Preview("FullImageRow", traits: .sizeThatFitsLayout) {
     FullImageRow(name: "Cafe Deadend", type: "Cafe", location: "Hong Kong", imageName: "cafedeadend", isFavorite: .constant(true))
 }
+
