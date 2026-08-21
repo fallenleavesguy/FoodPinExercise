@@ -2,44 +2,47 @@
 //  AboutView.swift
 //  FoodPin
 //
-//  Created by donghs on 8/21/26.
+//  Created by Simon Ng on 4/11/2025.
 //
 
 import SwiftUI
 import WebKit
 
 struct AboutView: View {
+    
     enum WebLink: String, Identifiable {
-        var id: UUID { UUID() }
-        
         case rateUs = "https://www.apple.com/ios/app-store"
         case feedback = "https://www.appcoda.com/contact"
         case twitter = "https://www.x.com/appcodamobile"
         case facebook = "https://www.facebook.com/appcodamobile"
         case instagram = "https://www.instagram.com/appcodadotcom"
+        
+        var id: UUID {
+            UUID()
+        }
     }
-
+    
     @State private var link: WebLink?
-
+    
     var body: some View {
         NavigationStack {
             List {
                 Image("about")
                     .resizable()
                     .scaledToFit()
-
+                
                 Section {
                     Label("Rate us on App Store", image: "store")
-                    .onTapGesture {
-                        link = .rateUs
-                    }
-
+                        .onTapGesture {
+                            link = .rateUs
+                        }
+                        
                     Label("Tell us your feedback", image: "chat")
-                    .onTapGesture {
-                        link = .feedback
-                    }
+                        .onTapGesture {
+                            link = .feedback
+                        }
                 }
-
+                
                 Section {
                     Label {
                         Text("X")
@@ -49,20 +52,20 @@ struct AboutView: View {
                     .onTapGesture {
                         link = .twitter
                     }
-
+                    
                     Label("Facebook", image: "facebook")
-                    .onTapGesture {
-                        link = .facebook
-                    }
-
+                        .onTapGesture {
+                            link = .facebook
+                        }
+                    
                     Label("Instagram", image: "instagram")
-                    .onTapGesture {
-                        link = .instagram
-                    }
+                        .onTapGesture {
+                            link = .instagram
+                        }
                 }
             }
             .listStyle(.grouped)
-
+            
             .navigationTitle("About")
             .navigationBarTitleDisplayMode(.automatic)
         }

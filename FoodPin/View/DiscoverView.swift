@@ -2,58 +2,56 @@
 //  DiscoverView.swift
 //  FoodPin
 //
-//  Created by donghs on 8/21/26.
+//  Created by Simon Ng on 5/11/2025.
 //
 
 import SwiftUI
 import CloudKit
 
 struct DiscoverView: View {
-    @State private var showLoadingIndicator = false
+    
     @State private var cloudStore: RestaurantCloudStore = RestaurantCloudStore()
-
-    private func getImageURL(restaurant: CKRecord) -> URL? {
-        guard let image = restaurant.object(forKey: "image"),
-            let imageAsset = image as? CKAsset
-        else {
-            return nil
-        }
-
-        return imageAsset.fileURL
-    }
-
+    @State private var showLoadingIndicator = false
+    
     var body: some View {
         NavigationStack {
             ZStack {
                 List(cloudStore.restaurants, id: \.recordID) { restaurant in
-                    HStack {
-                        AsyncImage(url: getImageURL(restaurant: restaurant)) { image in
+                    VStack(alignment: .leading) {
+                        AsyncImage(url: getImageURL(restaurant: restaurant)){ image in
                             image
                                 .resizable()
                                 .scaledToFill()
                         } placeholder: {
                             Color.purple.opacity(0.1)
                         }
-                        .frame(width: 50, height: 50)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-
-                        Text(restaurant.object(forKey: "name") as! String)
+                        .frame(height: 200)
+                        .cornerRadius(30)
+                        
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text(restaurant.object(forKey: "name") as! String)
+                                .font(.title2)
+                            
+                            Text(restaurant.object(forKey: "location") as! String)
+                                .font(.headline)
+                            
+                            Text(restaurant.object(forKey: "type") as! String)
+                                .font(.subheadline)
+                            
+                            Text(restaurant.object(forKey: "description") as? String ?? "")
+                                .font(.subheadline)
+                        }
                     }
+                    
+                    .listRowSeparator(.hidden)
+
                 }
                 .listStyle(PlainListStyle())
                 .task {
                     cloudStore.fetchRestaurantsWithOperational {
                         showLoadingIndicator = false
                     }
-                    // do {
-                    //     try await cloudStore.fetchRestaurants()
-
-                    // } catch {
-                    //     print(error)
-                    // }
                 }
-                .navigationTitle("Discover")
-                .navigationBarTitleDisplayMode(.automatic)
                 .onAppear {
                     showLoadingIndicator = true
                 }
@@ -62,12 +60,25 @@ struct DiscoverView: View {
                         showLoadingIndicator = false
                     }
                 }
-
+                
                 if showLoadingIndicator {
                     ProgressView()
                 }
             }
+            
+            .navigationTitle("Discover")
+            .navigationBarTitleDisplayMode(.automatic)
+            
         }
+    }
+    
+    private func getImageURL(restaurant: CKRecord) -> URL? {
+        guard let image = restaurant.object(forKey: "image"),
+              let imageAsset = image as? CKAsset else {
+            return nil
+        }
+        
+        return imageAsset.fileURL
     }
 }
 
