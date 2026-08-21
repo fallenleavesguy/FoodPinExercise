@@ -2,14 +2,14 @@
 //  MainView.swift
 //  FoodPin
 //
-//  Created by donghs on 8/21/26.
+//  Created by Simon Ng on 4/11/2025.
 //
 
 import SwiftUI
 
 struct MainView: View {
     @State private var selectedTabIndex = 0
-
+    
     var body: some View {
         TabView(selection: $selectedTabIndex) {
             Tab(value: 0) {
@@ -17,13 +17,13 @@ struct MainView: View {
             } label: {
                 Label("Favorites", systemImage: "tag.fill")
             }
-
+            
             Tab(value: 1) {
                 Text("Discover")
             } label: {
                 Label("Discover", systemImage: "wand.and.rays")
             }
-
+            
             Tab(value: 2) {
                 Text("About")
             } label: {
@@ -31,7 +31,6 @@ struct MainView: View {
             }
         }
         .tint(Color("NavigationBarTitle"))
-
     }
 }
 
