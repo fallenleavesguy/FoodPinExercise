@@ -118,6 +118,9 @@ struct NewRestaurantView: View {
                                     image: restaurantFormViewModel.image)
         
         modelContext.insert(restaurant)
+
+        let cloudStore = RestaurantCloudStore()
+        cloudStore.saveRecordToCloud(restaurant: restaurant)
     }
 }
 
