@@ -25,7 +25,7 @@ struct MainView: View {
             }
             
             Tab(value: 2) {
-                Text("About")
+                AboutView()
             } label: {
                 Label("About", systemImage: "square.stack")
             }
