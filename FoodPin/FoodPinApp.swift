@@ -12,7 +12,7 @@ import SwiftData
 struct FoodPinApp: App {
     var body: some Scene {
         WindowGroup {
-            RestaurantListView()
+            MainView()
         }
         .modelContainer(for: Restaurant.self)
     }
